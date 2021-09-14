@@ -1,7 +1,8 @@
 # tmpl8gen
 make templates for anything and everything.
 
-## what do this do?
+## what does this do?
+
 In simplest terms, take a mapping file in the form of json, copies a directory of files, and applies the mapping to the new copy of the directory, leaving the "template source" intact. The mappings are applied to all files in the template directory, including subfolders.
 
 ## sample usage
