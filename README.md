@@ -29,7 +29,7 @@ project_root_on_disk> ./buildrun.sh
 ## flag info
 flag name | description
 --------- | -----------
-bc | bypasses all confirmation prompts
+bc | bypasses all confirmation prompts (true/false, or just -bc)
 map_path | the json mapping file path (can be relative or absolute)
 out_dir | the output of your template directory (can be relative or absolute)
 tmp_path | the path to the template source directory (can be relative or absolute) 
