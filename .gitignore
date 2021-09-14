@@ -13,8 +13,12 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-!/tmpl8gen
-!/tmpl8gen.iml
-!/output/
-!/.idea/
-!/go.sum
+.idea/.gitignore
+.idea/aws.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+go.sum
+output/
+tmpl8gen
+tmpl8gen.iml
