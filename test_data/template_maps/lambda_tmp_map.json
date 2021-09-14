@@ -1,0 +1,9 @@
+{
+  "api_id": "ps-1231",
+  "ep_name": "petsearch",
+  "route_path": "/pet/search",
+  "http_method": "GET",
+  "fren_name": "Pet Search",
+  "app_code": "PTSRCH",
+  "role_code": "SERVICE"
+}
