@@ -17,7 +17,7 @@ import (
 const (
 	emptyStr         = ""
 	specialChars     = ` !@#$%^&*(){}[]|?><,"';:-=~'`
-	prompt           = "tg> "
+	prompt           = "tmpl8gen> "
 	flagTemplatePath = "tmp_path"
 	flagMapPath      = "map_path"
 	flagOutputDir    = "out_dir"
