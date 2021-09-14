@@ -21,9 +21,6 @@ Usage of ./tmpl8gen:
 After executing this, you will have a binary for your OS in the project root
 ```shell script
 project_root_on_disk> ./buildrun.sh
-
-# Run the example from same place
-./tmpl8gen -map_path=test_data/template_maps/lambda_tmp_map.json -tmp_path=test_data/confs/ -out_dir=output/app/confs/
 ```
 
 ## flag info
@@ -65,4 +62,14 @@ resource "aws_apigatewayv2_route" "petsearch" {
   route_key = "GET /pet/search"
   target = "integs/${aws_apigatewayv2_integration.petsearch.id}"
 }
+```
+
+### run the example
+```shell script
+# mac/linxu/unix
+./tmpl8gen -map_path=test_data/template_maps/lambda_tmp_map.json -tmp_path=test_data/confs/ -out_dir=output/app/confs/
+```
+```shell script
+# windows
+C:\> path-to-project-root\tmpl8gen.exe -map_path=test_data/template_maps/lambda_tmp_map.json -tmp_path=test_data/confs/ -out_dir=output/app/confs/
 ```
