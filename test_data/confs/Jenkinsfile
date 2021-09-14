@@ -1,0 +1,84 @@
+def APP_CODE = "{app_code}"
+def ROLE_CODE = "{role_code}"
+def FRIENDLY_NAME = "{fren_name}"
+
+def deploy = true
+
+def apigateway_url = ""
+
+pipeline {
+    triggers {
+        pollSCM('H/60 * * * *') // Enabling being build on Push
+    }
+    agent {  label 'docker' }
+    options {
+        buildDiscarder(logRotator(numToKeepStr:'10', artifactNumToKeepStr: '10'))
+        timeout(time: 20, unit: 'MINUTES')
+    }
+    stages{
+
+        stage("Build {ep_name} Lambda"){
+                steps {
+                    script {
+                        sh 'DOCKER_BUILDKIT=1 docker build --pull --rm --force-rm -t {ep_name}:latest -o {ep_name}zipout "./{ep_name}/source"'
+                    }
+                }
+        }
+        stage("Environment - dev"){
+            steps {
+                script {
+                    if (env.BRANCH_NAME == "master") {
+                        stage("Approve") {
+                            try {
+                                timeout(time: 5, unit:"MINUTES") {
+                                    input(message: "Should this commit be deployed?", ok: "Deploying")
+                                    deploy = true
+                                }
+                            } catch (err) {
+                                deploy = false
+                            }
+                        }
+                    }
+                    if (deploy) {
+                        stage("Deploy"){
+                            def infra_output = readJSON text: executeAWSTerraform("$APP_CODE", "$ROLE_CODE", "DEV", "./{ep_name}/iac", "$FRIENDLY_NAME")
+                            apigateway_url = infra_output.apigateway_url.value
+                        }
+                        stage("Integration test") {
+                            echo apigateway_url
+                            sh "docker build -t {ep_name}_test:latest --build-arg apigateway_url=${apigateway_url}/dev ./{ep_name}/tests"
+                        }
+                    }
+                }
+            }
+        }
+        stage("Environment - stage"){
+            steps {
+                script {
+                    deploy = true
+                    if (env.BRANCH_NAME != "master") {
+                        stage("Approve") {
+                            try {
+                                timeout(time: 5, unit:"MINUTES") {
+                                    input(message: "Should this commit be deployed?", ok: "Deploying")
+                                    deploy = true
+                                }
+                            } catch (err) {
+                                deploy = false
+                            }
+                        }
+                    }
+                    if (deploy) {
+                        stage("Deploy"){
+                            def infra_output = readJSON text: executeAWSTerraform("$APP_CODE", "$ROLE_CODE", "STAGE", "./{ep_name}/infrastructure", "$FRIENDLY_NAME")
+                            apigateway_url = infra_output.apigateway_url.value
+                        }
+                        stage("Integration test") {
+                            echo apigateway_url
+                            sh "docker build -t {ep_name}_test:latest --build-arg apigateway_url=${apigateway_url}/dev ./{ep_name}/tests"
+                        }
+                    }
+                }
+            }
+        }
+}
